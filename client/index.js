@@ -138,8 +138,13 @@ function _getContainerView(container) {
                     </button>
                 </td>
                 <td>
-                    <button onclick="showLogs('${container.Id}')" ${container.State !== 'running' ? 'disabled' : ''} title="Logs">
+                    <button onclick="showContainerLogs('${container.Id}')" ${container.State !== 'running' ? 'disabled' : ''} title="Logs">
                         <i class="fa-solid fa-list"></i>
+                    </button>
+                </td>
+                <td>
+                    <button onclick="removeContainer('${container.Id}', '${container.Name}')" title="Remove">
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                 </td>
             </tr>
@@ -232,10 +237,16 @@ function stopContainer(id) {
     showSpinner(button);
 }
 
-function showLogs(id) {
+function showContainerLogs(id) {
     document.querySelector('#logs-wrapper').style.visibility = 'visible';
     document.querySelector('#logs').textContent = '';
     serverSocket.send(JSON.stringify({ command: SocketCommand.SHOW_LOGS, id: id }));
+}
+
+function removeContainer(id, name) {
+    if (confirm(`Container ${name} will be deleted permanently, are you sure?`)) {
+        serverSocket.send(JSON.stringify({ command: SocketCommand.REMOVE_CONTAINER, id: id }));
+    }
 }
 
 function closeLogs() {
@@ -268,7 +279,8 @@ const SocketCommand =
         START_CONTAINER: 'start_container',
         STOP_CONTAINER: 'stop_container',
         SHOW_LOGS: 'show_logs',
-        CLOSE_LOGS: 'close_logs'
+        CLOSE_LOGS: 'close_logs',
+        REMOVE_CONTAINER: 'remove_container'
     });
 
 const ContainerState =

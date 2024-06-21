@@ -4,11 +4,12 @@ const Stream = require('stream');
 const express = require('express');
 const dotenv = require('dotenv');
 
+dotenv.config();
+
 const WEB_SOCKET_PORT = process.env.WEB_SOCKET_PORT || 5000;
 const HTTP_SERVER_PORT = process.env.HTTP_SERVER_PORT || 5001;
 const DOCKER_SOCKET_PATH = process.env.DOCKER_SOCKET_PATH || '/var/run/docker.sock'
 
-dotenv.config();
 const docker = Docker({
     socketPath: DOCKER_SOCKET_PATH
 });
@@ -133,6 +134,10 @@ function receiveMessage(message) {
             logStream.destroy();
             break;
 
+        case SocketCommand.REMOVE_CONTAINER:
+            docker.getContainer(message.id).remove();
+            break;
+
         default:
             throw new Error(`Invalid command ${message.command}`);
     }
@@ -183,7 +188,8 @@ const SocketCommand =
         START_CONTAINER: 'start_container',
         STOP_CONTAINER: 'stop_container',
         SHOW_LOGS: 'show_logs',
-        CLOSE_LOGS: 'close_logs'
+        CLOSE_LOGS: 'close_logs',
+        REMOVE_CONTAINER: 'remove_container'
     });
 
 class Container {
