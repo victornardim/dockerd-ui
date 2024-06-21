@@ -2,11 +2,16 @@ const WebSocket = require('ws');
 const Docker = require('dockerode');
 const Stream = require('stream');
 const express = require('express');
+const dotenv = require('dotenv');
 
 const WEB_SOCKET_PORT = process.env.WEB_SOCKET_PORT || 5000;
 const HTTP_SERVER_PORT = process.env.HTTP_SERVER_PORT || 5001;
+const DOCKER_SOCKET_PATH = process.env.DOCKER_SOCKET_PATH || '/var/run/docker.sock'
 
-const docker = Docker();
+dotenv.config();
+const docker = Docker({
+    socketPath: DOCKER_SOCKET_PATH
+});
 const httpServer = express();
 
 const socketServer = new WebSocket.Server({
