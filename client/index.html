@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>container-ui</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital@0;1&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" crossorigin="anonymous" />
+    <script src="https://use.fontawesome.com/releases/v6.1.1/js/all.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <button onclick="startSelectedContainers()">
+            <i class="fa-solid fa-play fa-2x success"></i>
+        </button>
+        <button onclick="stopSelectedContainers()">
+            <i class="fa-solid fa-stop fa-2x warning"></i>
+        </button>
+        <input id="container-filter" type="text" size="30" placeholder="Filter containers" onkeyup="filterContainers()">
+    </header>
+    <main>
+        <hr>
+        <div id="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <input id="check-all-containers" type="checkbox" onchange="toggleCheckAll()">
+                        </th>
+                        <th class="cell-state">State</th>
+                        <th class="cell-name">Name</th>
+                        <th class="cell-image">Image</th>
+                        <th class="cell-ports">Ports</th>
+                        <th colspan="3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="containers"></tbody>
+            </table>
+        </div>
+        <hr>
+        <div id="logs-wrapper">
+            <div id="logs">
+            </div>
+            <div id="buttons-wrapper">
+                <button id="close" onclick="closeLogs()">
+                    <i class="fa-solid fa-xmark fa-2x"></i>
+                </button>
+                <button id="clear" onclick="clearLogs()">
+                    <i class="fa-solid fa-trash fa-2x"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <hr>
+        <div id="connection-status-wrapper">
+            <span id="connection-status"></span>
+            <span id="reconnecting-in"></span>
+        </div>
+    </footer>
+</body>
+<script src="./index.js"></script>
+
+</html>
