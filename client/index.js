@@ -37,10 +37,24 @@ function connectToSocket() {
         if (message.type === 'CONTAINERS') {
             _containers = message.data;
             currentContainers = _containers;
+            sortContainers();
             showContainers();
         } else if (message.type === 'LOGS') {
             document.querySelector('#logs').innerHTML += `${message.data.replace(/[\x00-\x1F\x7F-\xA0]+/g, '').substr(1)}<br />`;
         } else if (message.type === 'CONTAINER') {
+            const container = message.data;
+            const foundContainer = currentContainers.find(c => c.Id === container.Id)
+            Object.assign(foundContainer, container);
+            if (container.State === ContainerState.RUNNING) {
+                const index = document.querySelector(`#containers tr[data-container-id="${message.data.Id}"]`).rowIndex - 1;
+                document.querySelector('#containers').deleteRow(index);
+                const row = document.querySelector('#containers').insertRow(0);
+                row.setAttribute('data-container-id', container.Id);
+                row.innerHTML = _getContainerView(message.data);
+
+                return;
+            }
+
             document.querySelector(`#containers tr[data-container-id="${message.data.Id}"]`).innerHTML = _getContainerView(message.data);
         }
     };
@@ -105,6 +119,12 @@ function _getConnectionStatusLabelStyle(status) {
     }
 }
 
+function sortContainers() {
+    currentContainers = currentContainers
+        .sort((a, b) => a.Name > b.Name ? -1 : 1)
+        .sort((a, _b) => a.State === ContainerState.RUNNING ? -1 : 1);
+}
+
 function showContainers() {
     document.querySelector('#containers').innerHTML = getContainersView(currentContainers);
 }
@@ -138,7 +158,7 @@ function _getContainerView(container) {
                     </button>
                 </td>
                 <td>
-                    <button onclick="showContainerLogs('${container.Id}')" ${container.State !== 'running' ? 'disabled' : ''} title="Logs">
+                    <button onclick="showContainerLogs('${container.Id}')" title="Logs">
                         <i class="fa-solid fa-list"></i>
                     </button>
                 </td>
@@ -223,6 +243,22 @@ function stopSelectedContainers() {
     const containers = _getSelectedContainers();
     if (!containers) return;
     containers.forEach(id => stopContainer(id));
+}
+
+function removeSelectedContainers() {
+    const containers = _getSelectedContainers();
+    if (!containers) return;
+    if (confirm(`${containers.length} container(s) will be deleted permanently, are you sure?`)) {
+        containers.forEach(id => serverSocket.send(JSON.stringify({ command: SocketCommand.REMOVE_CONTAINER, id: id })));
+    }
+}
+
+function stopRunningContainers() {
+    const containers = currentContainers.filter(container => container.State === ContainerState.RUNNING);
+    if (!containers.length) {
+        alert('No running containers');
+    }
+    containers.forEach(container => stopContainer(container.Id));
 }
 
 function startContainer(id) {

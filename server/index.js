@@ -82,18 +82,22 @@ function shouldListContainers(event) {
 
 function listContainers() {
     docker.listContainers({ all: true }, function (err, containers) {
-        if (!err) {
-            clientSocket.send(
-                JSON.stringify(
-                    {
-                        type: 'CONTAINERS',
-                        data: Container.fromList(containers)
-                    }
-                )
-            );
-        } else {
+        if (err) {
             console.error('Error while trying to list containers', err);
+            return;
         }
+
+        console.log(containers);
+
+        clientSocket.send(
+            JSON.stringify(
+                {
+                    type: 'CONTAINERS',
+                    data: Container.fromList(containers)
+                }
+            )
+        );
+        
     });
 }
 
@@ -170,6 +174,7 @@ function showLogs(id) {
     container.logs({ follow: true, stdout: true, stderr: true, tail: 20 }, function (err, stream) {
         if (err) {
             console.error(err.message);
+            return;
         }
 
         logStream = stream;
