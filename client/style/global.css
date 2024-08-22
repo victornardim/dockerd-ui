@@ -1,0 +1,73 @@
+body {
+    font-family: "Nunito", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+header * {
+    margin: .3rem .4rem .3rem .4rem;
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    margin: .5rem 0 .5rem 0;
+}
+
+button {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #555;
+    opacity: 1;
+}
+
+button:hover {
+    opacity: 0.7;
+}
+
+button:active {
+    opacity: 0.4;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+th {
+    padding: .3rem .5rem .3rem .5rem;
+    text-align: left;
+}
+
+td {
+    padding: .3rem .5rem .3rem .5rem;
+}
+
+hr {
+    border-top: none;
+    border-color: #ccc;
+    margin-block: .3px;
+}
+
+input[type=text] {
+    border-color: #aaa;
+    border-radius: .7rem;
+    border-style: solid;
+    border-width: 1px;
+    padding: .3rem;
+}

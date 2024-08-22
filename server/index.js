@@ -8,7 +8,7 @@ dotenv.config();
 
 const WEB_SOCKET_PORT = process.env.WEB_SOCKET_PORT || 5000;
 const HTTP_SERVER_PORT = process.env.HTTP_SERVER_PORT || 5001;
-const DOCKER_SOCKET_PATH = process.env.DOCKER_SOCKET_PATH || '/var/run/docker.sock'
+const DOCKER_SOCKET_PATH = process.env.DOCKER_SOCKET_PATH || '/var/run/docker.sock';
 
 const docker = Docker({
     socketPath: DOCKER_SOCKET_PATH
@@ -23,6 +23,7 @@ const socketServer = new WebSocket.Server({
 
 let clientSocket = null;
 let logStream = null;
+let _containers = null;
 
 socketServer.on('connection', function (client) {
     clientSocket = client;
@@ -87,13 +88,15 @@ function listContainers() {
             return;
         }
 
-        console.log(containers);
+        const ccontainers = Container.fromList(containers);
+        _containers = ccontainers;
+        sortContainers();
 
         clientSocket.send(
             JSON.stringify(
                 {
-                    type: 'CONTAINERS',
-                    data: Container.fromList(containers)
+                    type: 'update_containers',
+                    data: _containers
                 }
             )
         );
@@ -109,15 +112,27 @@ function updateContainer(id) {
                 return;
             }
 
+            const ccontainer = Container.fromSingle(container)
+            const found = _containers.find(c => c.Id = ccontainer.Id);
+            Object.assign(found, ccontainer);
+            sortContainers();
+
             clientSocket.send(
                 JSON.stringify(
                     {
-                        type: 'CONTAINER',
-                        data: Container.fromSingle(container)
+                        type: 'update_container',
+                        data: found
                     }
                 )
             );
         });
+}
+
+function sortContainers() {
+    _containers = _containers
+        .sort((a, b) => a.Name > b.Name ? -1 : 1)
+        .sort((a, _b) => a.State === ContainerState.RUNNING ? -1 : 1)
+        .map((container, idx) => Object.assign(container, {Order: idx}));
 }
 
 function receiveMessage(message) {
@@ -160,7 +175,7 @@ function showLogs(id) {
         clientSocket.send(
             JSON.stringify(
                 {
-                    type: 'LOGS',
+                    type: 'show_logs',
                     data: chunk.toString('utf8')
                 }
             )
@@ -195,6 +210,17 @@ const SocketCommand =
         SHOW_LOGS: 'show_logs',
         CLOSE_LOGS: 'close_logs',
         REMOVE_CONTAINER: 'remove_container'
+    });
+
+const ContainerState =
+    Object.freeze({
+        CREATED: 'created',
+        RESTARTING: 'restarting',
+        RUNNING: 'running',
+        REMOVING: 'removing',
+        PAUSED: 'paused',
+        EXITED: 'exited',
+        DEAD: 'dead'
     });
 
 class Container {

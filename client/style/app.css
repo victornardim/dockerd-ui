@@ -1,0 +1,102 @@
+#table-wrapper {
+    margin: .7rem 0 .7rem 0;
+    height: 35vh;
+    overflow-y: scroll;
+}
+
+#logs-wrapper {
+    position: relative;
+    background-color: #555;
+    border-color: #333;
+    border-width: 1px;
+    height: 35vh;
+    margin: 2rem;
+    padding: 1rem;
+    visibility: hidden;
+    display: flex;
+    flex-direction: row;
+}
+
+#logs-wrapper #buttons-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: .3rem;
+}
+
+#logs-wrapper #buttons-wrapper button {
+    color: white;
+}
+
+#logs {
+    height: 35vh;
+    font-size: small;
+    color: white;
+    overflow-y: scroll;
+    flex: 1;
+}
+
+#connection-status-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: .5rem;
+}
+
+#reconnecting-in {
+    margin-left: 1rem;
+}
+
+.cell-state {
+    width: 80px;
+}
+
+.cell-name {
+    width: 180px;
+    text-overflow: ellipsis;
+}
+
+.cell-image {
+    width: 180px;
+    text-overflow: ellipsis;
+}
+
+.cell-ports {
+    width: 180px;
+}
+
+.state {
+    border-radius: 5rem;
+    border-style: solid;
+    border-width: 1px;
+    padding: .1rem .3rem .1rem .3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+}
+
+.info {
+    color: #aaa;
+}
+
+.success {
+    color: #00b109;
+}
+
+.alert {
+    color: #ffae00;
+}
+
+.warning {
+    color: #ff2b2b;
+}
+
+.spin {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

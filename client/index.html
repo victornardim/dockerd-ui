@@ -13,24 +13,26 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" crossorigin="anonymous" />
     <script src="https://use.fontawesome.com/releases/v6.1.1/js/all.js"></script>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style/app.css">
+    <link rel="stylesheet" href="style/global.css">
+    <link rel="stylesheet" href="style/scrollbar.css">
 </head>
 
 <body>
     <header>
-        <button onclick="startSelectedContainers()">
+        <button id="btn-start-selected" title="Start selected containers">
             <i class="fa-solid fa-play fa-2x success"></i>
         </button>
-        <button onclick="stopSelectedContainers()">
+        <button id="btn-stop-selected" title="Stop selected containers">
             <i class="fa-solid fa-stop fa-2x warning"></i>
         </button>
-        <button onclick="stopRunningContainers()">
+        <button id="btn-stop-running" title="Stop all containers">
             <i class="fa-solid fa-stop fa-2x success"></i>
         </button>
-        <button onclick="removeSelectedContainers()">
+        <button id="btn-remove-selected" title="Remove selected containers">
             <i class="fa-solid fa-trash fa-2x warning"></i>
         </button>
-        <input id="container-filter" type="text" size="30" placeholder="Filter containers" onkeyup="filterContainers()">
+        <input id="container-filter" type="text" size="30" placeholder="Filter containers">
     </header>
     <main>
         <hr>
@@ -39,7 +41,7 @@
                 <thead>
                     <tr>
                         <th>
-                            <input id="check-all-containers" type="checkbox" onchange="toggleCheckAll()">
+                            <input id="check-all-containers" type="checkbox">
                         </th>
                         <th class="cell-state">State</th>
                         <th class="cell-name">Name</th>
@@ -56,10 +58,10 @@
             <div id="logs">
             </div>
             <div id="buttons-wrapper">
-                <button id="close" onclick="closeLogs()">
+                <button id="close">
                     <i class="fa-solid fa-xmark fa-2x"></i>
                 </button>
-                <button id="clear" onclick="clearLogs()">
+                <button id="clear">
                     <i class="fa-solid fa-trash fa-2x"></i>
                 </button>
             </div>
@@ -73,6 +75,38 @@
         </div>
     </footer>
 </body>
-<script src="./index.js"></script>
+<script src="./enum/container-state.js"></script>
+<script src="./enum/socket-command.js"></script>
+<script src="./enum/listener-event.js"></script>
+<script src="./controller.js"></script>
+<script src="./view.js"></script>
+<script src="./service.js"></script>
+<script src="./extensions.js"></script>
+<script>
+    const controller = new Controller();
+    
+    document.querySelector('#btn-start-selected')
+        .addEventListener('click', controller.startSelectedContainers);
 
+    document.querySelector('#btn-stop-selected')
+        .addEventListener('click', controller.stopSelectedContainers.bind(controller));
+
+    document.querySelector('#btn-stop-running')
+        .addEventListener('click', controller.stopRunningContainers.bind(controller));
+    
+    document.querySelector('#btn-remove-selected')
+        .addEventListener('click', controller.removeSelectedContainers.bind(controller));
+
+    document.querySelector('#logs-wrapper #close')
+        .addEventListener('click', controller.closeLogs.bind(controller));
+
+    document.querySelector('#logs-wrapper #clear')
+        .addEventListener('click', controller.clearLogs.bind(controller));
+
+    document.querySelector('#check-all-containers')
+        .addEventListener('change', controller.toggleCheckAll.bind(controller));
+
+    document.querySelector('#container-filter')
+        .addEventListener('keyup', controller.filterContainers.bind(controller));
+</script>
 </html>
