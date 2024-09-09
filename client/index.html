@@ -24,15 +24,16 @@
             <i class="fa-solid fa-play fa-2x success"></i>
         </button>
         <button id="btn-stop-selected" title="Stop selected containers">
-            <i class="fa-solid fa-stop fa-2x warning"></i>
+            <i class="fa-solid fa-stop fa-2x success"></i>
         </button>
         <button id="btn-stop-running" title="Stop all containers">
-            <i class="fa-solid fa-stop fa-2x success"></i>
+            <i class="fa-solid fa-stop fa-2x warning"></i>
         </button>
         <button id="btn-remove-selected" title="Remove selected containers">
             <i class="fa-solid fa-trash fa-2x warning"></i>
         </button>
         <input id="container-filter" type="text" size="30" placeholder="Filter containers">
+        <div id="container-groups"></div>
     </header>
     <main>
         <hr>
@@ -83,30 +84,6 @@
 <script src="./service.js"></script>
 <script src="./extensions.js"></script>
 <script>
-    const controller = new Controller();
-    
-    document.querySelector('#btn-start-selected')
-        .addEventListener('click', controller.startSelectedContainers);
-
-    document.querySelector('#btn-stop-selected')
-        .addEventListener('click', controller.stopSelectedContainers.bind(controller));
-
-    document.querySelector('#btn-stop-running')
-        .addEventListener('click', controller.stopRunningContainers.bind(controller));
-    
-    document.querySelector('#btn-remove-selected')
-        .addEventListener('click', controller.removeSelectedContainers.bind(controller));
-
-    document.querySelector('#logs-wrapper #close')
-        .addEventListener('click', controller.closeLogs.bind(controller));
-
-    document.querySelector('#logs-wrapper #clear')
-        .addEventListener('click', controller.clearLogs.bind(controller));
-
-    document.querySelector('#check-all-containers')
-        .addEventListener('change', controller.toggleCheckAll.bind(controller));
-
-    document.querySelector('#container-filter')
-        .addEventListener('keyup', controller.filterContainers.bind(controller));
+    new Controller();
 </script>
 </html>

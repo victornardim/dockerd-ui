@@ -6,6 +6,7 @@ class Controller {
         this.#service = new Service();
         this.#view = new View();
 
+        this.#registerEvents();
         this.#registerListeners();
     }
 
@@ -70,10 +71,10 @@ class Controller {
         $('#logs').textContent = '';
     }
     
-    filterContainers() {
+    filterContainersByName() {
         const filter = $('#container-filter').value;
-        this.#service.filterContainers(filter);
-        this.#showContainers();
+        this.#service.filterContainersByName(filter);
+        this.#showContainers(this.#service.getContainers());
     }
 
     showSpinner(button) {
@@ -97,6 +98,32 @@ class Controller {
     
         element.checked = allChecked;
         element.indeterminate = someChecked && !allChecked;
+    }
+
+    #registerEvents() {
+        document.querySelector('#btn-start-selected')
+        .addEventListener('click', this.startSelectedContainers);
+
+        document.querySelector('#btn-stop-selected')
+            .addEventListener('click', this.stopSelectedContainers);
+
+        document.querySelector('#btn-stop-running')
+            .addEventListener('click', this.stopRunningContainers);
+        
+        document.querySelector('#btn-remove-selected')
+            .addEventListener('click', this.removeSelectedContainers);
+
+        document.querySelector('#logs-wrapper #close')
+            .addEventListener('click', this.closeLogs);
+
+        document.querySelector('#logs-wrapper #clear')
+            .addEventListener('click', this.clearLogs);
+
+        document.querySelector('#check-all-containers')
+            .addEventListener('change', this.toggleCheckAll);
+
+        document.querySelector('#container-filter')
+            .addEventListener('keyup', this.filterContainersByName);
     }
 
     #registerListeners() {
@@ -170,10 +197,12 @@ class Controller {
 
     #onUpdateContainers(containers) {
         this.#showContainers(containers);
+        this.#addGroupFilterButtons(containers);
     }
     
     #showContainers(containers) {
-        $('#containers').appendChild(...this.#getContainersComponent(containers));
+        $('#containers').innerHTML = '';
+        $('#containers').append(...this.#getContainersComponent(containers));
     }
 
     #getContainersComponent(containers) {
@@ -204,6 +233,30 @@ class Controller {
         btnRemove.onclick = this.removeContainer.bind(this, container.Id, container.Name);
 
         return view;
+    }
+
+    #addGroupFilterButtons(containers) {
+        $('#container-groups').innerHTML = '';
+        const groups = new Set(containers.map(container => container.Group).filter(group => !!group));
+        groups.forEach(group => {
+            const btn = document.createElement('button');
+            btn.innerText = group;
+            btn.setAttribute('active', false);
+            btn.classList.add('container-group-button');
+            btn.onclick = this.#filterContainersByGroup.bind(this, group, btn);
+
+            $('#container-groups').appendChild(btn);
+        });
+    }
+
+    #filterContainersByGroup(group, button) {
+        const newState = button.getAttribute('active') !== 'true';
+        if (newState) {
+            $('.container-group-button[active="true"]')?.setAttribute('active', false);
+        }
+        button.setAttribute('active', newState);
+        this.#service.filterContainersByGroup(group, newState);
+        this.#showContainers(this.#service.getContainers());
     }
 
     #onUpdateContainer(container) {

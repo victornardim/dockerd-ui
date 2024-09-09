@@ -26,17 +26,25 @@ class Service {
 
     getContainers() {
         if (this.#filteredContainers.length) {
-            return structuredClone(this.#filteredContainers.length);
+            return structuredClone(this.#filteredContainers);
         }
 
         return structuredClone(this.#containers);
     }
 
-    filterContainers(filter) {
+    filterContainersByName(filter) {
         if (!filter) {
             this.#filteredContainers = this.#containers;
         } else {
             this.#filteredContainers = this.#containers.filter(container => container.Name.startsWith(filter));
+        }
+    }
+
+    filterContainersByGroup(filter, checked) {
+        if (!filter || !checked) {
+            this.#filteredContainers = this.#containers;
+        } else {
+            this.#filteredContainers = this.#containers.filter(container => container.Group === filter);
         }
     }
 
@@ -100,7 +108,7 @@ class Service {
     }
 
     #tryReconnectToSocket() {
-        reconnectIn = this.RECONNECT_TRY_INTERVAL;
+        let reconnectIn = this.RECONNECT_TRY_INTERVAL;
         const intervalId = setInterval(() => {
             this.#emitEvent(ListenerEvent.TRY_RECONNECTION, reconnectIn);
             reconnectIn--;

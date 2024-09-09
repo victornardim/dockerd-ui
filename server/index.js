@@ -230,7 +230,8 @@ class Container {
             Name: container.Name.substr(1),
             State: container.State.Status,
             Ports: Port.fromSingle(container),
-            Image: container.Config.Image
+            Image: container.Config.Image,
+            Group: container.Config.Labels['com.docker.compose.project']
         };
     }
 
@@ -241,7 +242,8 @@ class Container {
                 Name: container.Names[0].substr(1),
                 State: container.State,
                 Ports: Port.fromList(container),
-                Image: container.Image
+                Image: container.Image,
+                Group: container.Labels['com.docker.compose.project']
             };
         });
     }

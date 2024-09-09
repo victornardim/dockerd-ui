@@ -96,6 +96,17 @@
     animation: spin 2s linear infinite;
 }
 
+.container-group-button {
+    border: 1px solid #aaa;
+    border-radius: 5rem;
+    padding: 0.3rem;
+}
+
+.container-group-button[active="true"] {
+    background-color: #aaa;
+    color: white;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
