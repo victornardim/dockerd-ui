@@ -110,10 +110,10 @@ class Service {
     #tryReconnectToSocket() {
         let reconnectIn = this.RECONNECT_TRY_INTERVAL;
         const intervalId = setInterval(() => {
-            this.#emitEvent(ListenerEvent.TRY_RECONNECTION, reconnectIn);
             reconnectIn--;
+            this.#emitEvent(ListenerEvent.TRY_RECONNECTION, reconnectIn);
             if (reconnectIn === 0) {
-                connectToSocket();
+                this.#connectToServerSocket();
                 clearInterval(intervalId);
             }
         }, 1000);

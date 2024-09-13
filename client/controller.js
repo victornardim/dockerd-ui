@@ -102,28 +102,28 @@ class Controller {
 
     #registerEvents() {
         document.querySelector('#btn-start-selected')
-        .addEventListener('click', this.startSelectedContainers);
+        .addEventListener('click', this.startSelectedContainers.bind(this));
 
         document.querySelector('#btn-stop-selected')
-            .addEventListener('click', this.stopSelectedContainers);
+            .addEventListener('click', this.stopSelectedContainers.bind(this));
 
         document.querySelector('#btn-stop-running')
-            .addEventListener('click', this.stopRunningContainers);
+            .addEventListener('click', this.stopRunningContainers.bind(this));
         
         document.querySelector('#btn-remove-selected')
-            .addEventListener('click', this.removeSelectedContainers);
+            .addEventListener('click', this.removeSelectedContainers.bind(this));
 
         document.querySelector('#logs-wrapper #close')
-            .addEventListener('click', this.closeLogs);
+            .addEventListener('click', this.closeLogs.bind(this));
 
         document.querySelector('#logs-wrapper #clear')
-            .addEventListener('click', this.clearLogs);
+            .addEventListener('click', this.clearLogs.bind(this));
 
         document.querySelector('#check-all-containers')
-            .addEventListener('change', this.toggleCheckAll);
+            .addEventListener('change', this.toggleCheckAll.bind(this));
 
         document.querySelector('#container-filter')
-            .addEventListener('keyup', this.filterContainersByName);
+            .addEventListener('keyup', this.filterContainersByName.bind(this));
     }
 
     #registerListeners() {
@@ -181,6 +181,8 @@ class Controller {
     }
 
     #onTryReconnection(reconnectIn) {
+        $('#container-groups').innerHTML = '';
+
         const span = $('#reconnecting-in');
         span.textContent = `Trying to reconnect in ${reconnectIn} seconds...`;
         if (reconnectIn === 0) {
