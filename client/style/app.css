@@ -43,7 +43,7 @@
     padding: .5rem;
 }
 
-#reconnecting-in {
+#connection-status-wrapper * {
     margin-left: 1rem;
 }
 

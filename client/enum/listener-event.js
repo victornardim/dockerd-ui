@@ -1,5 +1,6 @@
 const ListenerEvent =
     Object.freeze({
+        DOCKER_STATUS: 'docker_status',
         TRY_CONNECTION: 'try_connection',
         TRY_RECONNECTION: 'try_reconnection',
         OPEN_CONNECTION: 'open_connection',

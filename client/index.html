@@ -71,11 +71,15 @@
     <footer>
         <hr>
         <div id="connection-status-wrapper">
+            <span>Docker: </span>
+            <span id="docker-status"></span>
+            <span>WebSocket: </span>
             <span id="connection-status"></span>
             <span id="reconnecting-in"></span>
         </div>
     </footer>
 </body>
+<script src="./enum/docker-status.js"></script>
 <script src="./enum/container-state.js"></script>
 <script src="./enum/socket-command.js"></script>
 <script src="./enum/listener-event.js"></script>

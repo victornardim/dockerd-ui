@@ -30,7 +30,7 @@ socketServer.on('connection', function (client) {
 
     console.info('Client connected');
 
-    listenToContainerChanges();
+    testDockerConnection(listenToContainerChanges);
 
     clientSocket.on('message', function (raw) {
         const message = JSON.parse(raw.toString());
@@ -44,6 +44,37 @@ socketServer.on('connection', function (client) {
         }
     });
 });
+
+function testDockerConnection(callback) {
+    docker.ping(function (err) {
+        if (err) {
+            clientSocket.send(
+                JSON.stringify(
+                    {
+                        type: 'docker_status',
+                        data: {
+                            status: DockerStatus.DISCONNECTED,
+                            reason: err.code
+                        }
+                    }
+                )
+            );
+        } else {
+            clientSocket.send(
+                JSON.stringify(
+                    {
+                        type: 'docker_status',
+                        data: {
+                            status: DockerStatus.CONNECTED
+                        }
+                    }
+                )
+            );
+
+            callback();
+        }
+    });
+}
 
 function listenToContainerChanges() {
     listContainers();
@@ -205,11 +236,18 @@ function showLogs(id) {
 
 const SocketCommand =
     Object.freeze({
+        DOCKER_STATUS: 'docker_status',
         START_CONTAINER: 'start_container',
         STOP_CONTAINER: 'stop_container',
         SHOW_LOGS: 'show_logs',
         CLOSE_LOGS: 'close_logs',
         REMOVE_CONTAINER: 'remove_container'
+    });
+
+const DockerStatus =
+    Object.freeze({
+        CONNECTED: 'connected',
+        DISCONNECTED: 'disconnected'
     });
 
 const ContainerState =

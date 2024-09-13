@@ -127,6 +127,7 @@ class Controller {
     }
 
     #registerListeners() {
+        this.#service.registerListener(ListenerEvent.DOCKER_STATUS, this.#onUpdateDockerStatus.bind(this));
         this.#service.registerListener(ListenerEvent.TRY_CONNECTION, this.#showSocketStatus.bind(this));
         this.#service.registerListener(ListenerEvent.TRY_RECONNECTION, this.#onTryReconnection.bind(this));
         this.#service.registerListener(ListenerEvent.OPEN_CONNECTION, this.#showSocketStatus.bind(this));
@@ -136,10 +137,19 @@ class Controller {
         this.#service.registerListener(ListenerEvent.SHOW_LOGS, this.#onShowLogs.bind(this));
     }
 
-    #showSocketStatus(state) {
+    #onUpdateDockerStatus(state) {
+        const span = $('#docker-status');
+        span.textContent = state.status == 'connected' ? 'CONNECTED' : 'DISCONNECTED';
+        span.className = state.status == 'connected' ? 'state success' : 'state warning';
+        if (state.reason) {
+            span.title = `${state.reason} - Check if your docker service is started`;
+        }
+    }
+
+    #showSocketStatus(status) {
         const span = $('#connection-status');
-        span.textContent = this.#getConnectionStatusDescription(state);
-        span.className = this.#getConnectionStatusLabelStyle(state);
+        span.textContent = this.#getConnectionStatusDescription(status);
+        span.className = this.#getConnectionStatusLabelStyle(status);
     }
 
     #getConnectionStatusDescription(status) {
